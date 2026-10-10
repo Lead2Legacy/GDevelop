@@ -49,7 +49,12 @@ export const findGDJS = (
   // run `newIDE/web-app/scripts/deploy-GDJS-Runtime` script.
   let gdjsRoot = `https://resources.gdevelop-app.com/GDJS-${getIDEVersionWithHash()}`;
 
-  if (Window.isDev()) {
+  // Short Family fork: self-hosted builds (scripts/game-maker-build.sh) bundle the
+  // runtime in the build folder, so previews/exports don't depend on GDevelop's CDN.
+  // $FlowFixMe[cannot-resolve-name]
+  if (process.env.REACT_APP_SELF_HOSTED_GDJS === 'true') {
+    gdjsRoot = `${window.location.origin}/GDJS`;
+  } else if (Window.isDev()) {
     gdjsRoot =
       window.location.hostname === 'localhost'
         ? // Served by `watch-serve-GDJS-runtime.js` when running the IDE locally.
